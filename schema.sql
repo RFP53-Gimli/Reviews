@@ -51,3 +51,30 @@ CREATE TABLE characteristics_reviews (
   FOREIGN KEY (characteristics_id) REFERENCES characteristics(id),
   FOREIGN KEY (review_id) REFERENCES reviews(id)
 );
+
+-- what the view needs to save:
+  -- columns: id, product_id, 1, 2, 3, 4, 5 starts
+CREATE MATERIALIZED VIEW review_ratings AS
+  select
+    product_id,
+    rating,
+    count(rating )
+  from reviews
+  group by
+    product_id,
+    rating
+;
+
+CREATE MATERIALIZED VIEW average_characteristics AS
+  select
+    c.product_id,
+    c.name,
+    AVG(cr.value)
+  from characteristics c
+  join  characteristics_reviews cr
+  on c.id = cr.characteristics_id
+  group by
+    c.product_id,
+    c.name
+;
+-- need materialized view to give a average for each characteristic
