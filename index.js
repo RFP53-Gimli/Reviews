@@ -1,13 +1,20 @@
 const { Pool, Client } = require('pg')
 
-const pool = new Pool()
-const client = new Client()
-await client.connect((err, pass) => {
-  if (err) {
-    console.log('failed, ', err)
-  } else {
-    console.log('success')
-  }
-})
+// const client = new Client()
+// await client.connect((err) => {
+  //   if (err) {
+    //     console.log('failed, ', err)
+    //   } else {
+      //     console.log('success')
+      //   }
+      // })
+      //client.query()
 
-client.query()
+const pool = new Pool({
+  database: 'gimli',
+  //port: 3211
+});
+pool.query('Select * from photos limit 5', (err, res) => {
+  console.log(res.rows)
+  pool.end()
+})
