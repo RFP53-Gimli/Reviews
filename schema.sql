@@ -20,6 +20,7 @@ CREATE TABLE reviews (
 
 );
 CREATE INDEX review_helpfulnes ON reviews(helpfulnes);
+CREATE INDEX review_prodID ON reviews(product_id);
 CREATE INDEX review_recent ON reviews(date);
 
 CREATE TABLE photos (
