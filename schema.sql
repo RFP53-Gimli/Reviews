@@ -20,6 +20,7 @@ CREATE TABLE reviews (
 
 );
 CREATE INDEX review_helpfulnes ON reviews(helpfulnes);
+CREATE INDEX review_recent ON reviews(date);
 
 CREATE TABLE photos (
   id INT PRIMARY KEY NOT NULL,
@@ -27,6 +28,7 @@ CREATE TABLE photos (
   url text,
   FOREIGN KEY (review_id) REFERENCES reviews(id)
 );
+CREATE INDEX photos_reviewId ON photos(review_id);
 
 CREATE TABLE characteristics (
   id INT PRIMARY KEY NOT NULL,
@@ -42,6 +44,7 @@ CREATE TABLE characteristics (
   -- FOREIGN KEY (product_id) REFERENCES products(id)
   -- FOREIGN KEY (review_id) REFERENCES reviews(id)
 );
+--CREATE INDEX chr_product ON characteristics(product_id);
 
 CREATE TABLE characteristics_reviews (
   id INT PRIMARY KEY NOT NULL,
@@ -51,7 +54,7 @@ CREATE TABLE characteristics_reviews (
   FOREIGN KEY (characteristics_id) REFERENCES characteristics(id),
   FOREIGN KEY (review_id) REFERENCES reviews(id)
 );
-
+-- CREATE INDEX chr_product ON characteristics_reviews(product_id)
 -- what the view needs to save:
   -- columns: id, product_id, 1, 2, 3, 4, 5 starts
 CREATE MATERIALIZED VIEW review_ratings AS
@@ -64,6 +67,7 @@ CREATE MATERIALIZED VIEW review_ratings AS
     product_id,
     rating
 ;
+CREATE INDEX reviewratings_product ON review_ratings(product_id);
 
 CREATE MATERIALIZED VIEW average_characteristics AS
   select
@@ -77,4 +81,5 @@ CREATE MATERIALIZED VIEW average_characteristics AS
     c.product_id,
     c.name
 ;
+CREATE INDEX chr_product ON average_characteristics(product_id)
 -- need materialized view to give a average for each characteristic
