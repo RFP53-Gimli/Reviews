@@ -4,7 +4,7 @@
 -- );
 -- DROP table if exists characteristics_reviews, characteristics, photos, reviews;
 CREATE TABLE reviews (
-  id INT PRIMARY KEY NOT NULL,
+  id SERIAL PRIMARY KEY,
   product_id INT,
   rating INT,
   date BIGINT,
@@ -24,7 +24,7 @@ CREATE INDEX review_prodID ON reviews(product_id);
 CREATE INDEX review_recent ON reviews(date);
 
 CREATE TABLE photos (
-  id INT PRIMARY KEY NOT NULL,
+  id SERIAL PRIMARY KEY,
   review_id INT,
   url text,
   FOREIGN KEY (review_id) REFERENCES reviews(id)
@@ -32,7 +32,7 @@ CREATE TABLE photos (
 CREATE INDEX photos_reviewId ON photos(review_id);
 
 CREATE TABLE characteristics (
-  id INT PRIMARY KEY NOT NULL,
+  id SERIAL PRIMARY KEY,
   product_id INT,
   name CHAR(10)
   -- review_id INT,
@@ -48,7 +48,7 @@ CREATE TABLE characteristics (
 --CREATE INDEX chr_product ON characteristics(product_id);
 
 CREATE TABLE characteristics_reviews (
-  id INT PRIMARY KEY NOT NULL,
+  id SERIAL PRIMARY KEY,
   characteristics_id INT,
   review_id INT,
   value INT,
@@ -82,5 +82,5 @@ CREATE MATERIALIZED VIEW average_characteristics AS
     c.product_id,
     c.name
 ;
-CREATE INDEX chr_product ON average_characteristics(product_id)
+CREATE INDEX chr_product ON average_characteristics(product_id);
 -- need materialized view to give a average for each characteristic

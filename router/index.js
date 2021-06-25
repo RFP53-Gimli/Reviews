@@ -1,13 +1,15 @@
 const express = require('express');
 const db = require('../database/db.js')
-
+const bodyParser = require('body-parser')
 const app = express();
 const port = 3000;
-// parse the body
-// import db connection
+
+app.use(bodyParser.json())
+
 app.get('/reviews/meta', (req, res) => {
   let product = req.query.product_id;
   let response = {
+    product_id: product,
     ratings: {},
     recommended: 0,
     characteristics: {}
@@ -70,18 +72,50 @@ app.get('/reviews', (req, res) => {
    })
    .catch(err => res.send(err))
 })
-// select reviews.id, photos.url from reviews left join photos on photos.review_id = reviews.id where reviews.id= 5 order by helpfulnes desc limit 3 Offset 0;
-// app.get('/photos', (req, res) => {
-//   db.query('select * from photos where review_id=5', (err, data) => {
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       //results[index].ph
-//       res.send(data)
-//     }
-// })
-// })
+
+app.post('/reviews', (req, res) => {
+  //console.log(JSON.stringify(req.body))
+  //res.send(req.body)
+  // gather information from request
+  let data = req.body;
+  let reviewData = [data.product_id, data.rating, Date.now(), data.summary, data.body, data.recommended, data.name, data.email]
+  // format data to add a new row to reviews table
+  let text = 'insert into reviews product_id, rating, date, summary, body, recommended, reviewer, reviewer_email, helpfulnes values $1, $2, $3, $4, $5, $6, $7, $8, 0';
+  let photoData = data.photos;
+  let photoText = 'insert into photos (review_id, url) values ($1, $2)'
+  db.query(text, reviewData)
+    .then(test => {
+      photoData.forEach(photo => {
+        // check that test.rows does what i want
+        db.query(photoText, [test.rows[0], dataphoto.url])
+      })
+      res.send('added')
+    })
+    .catch(err => {
+      console.log(err)
+      res.send(err)
+    })
+  // query review table data
+    // update materialized views
+  // query to add photos to photo table
+  // send res.status = 200
+})
+
+app.put('/reviews/:reviewID/helpful', (req, res) => {
+  //console.log(req.query)
+  let reviewID = req.params.reviewID;
+  // update the report to add 1 to helpfulness
+  res.send(req.params)
+})
+
+app.put('/reviews/:reviewID/report', (req, res) => {
+  let reviewID = req.params.reviewID;
+  // update the row to set report to true
+  res.send(req.params)
+})
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`)
 })
+
+// insert into reviews (product_id, rating, date, summary, body, recommended, reviewer, reviewer_email, helpfulnes) values (5, 3, 1519211809934, 'test, 'test 23', true, 'bob', 'test@email.com', 0) Returning id;'
