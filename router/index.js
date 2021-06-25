@@ -68,6 +68,7 @@ app.get('/reviews', (req, res) => {
     })
    })
    .then(final => {
+     // update materialized view
      res.send(final);
    })
    .catch(err => res.send(err))
@@ -80,42 +81,69 @@ app.post('/reviews', (req, res) => {
   let data = req.body;
   let reviewData = [data.product_id, data.rating, Date.now(), data.summary, data.body, data.recommended, data.name, data.email]
   // format data to add a new row to reviews table
-  let text = 'insert into reviews product_id, rating, date, summary, body, recommended, reviewer, reviewer_email, helpfulnes values $1, $2, $3, $4, $5, $6, $7, $8, 0';
+  let text = 'insert into reviews (product_id, rating , date, summary, body, recommended, reviewer, reviewer_email, helpfulnes) values($1, $2, $3, $4, $5, $6, $7, $8, 0) returning id;';
   let photoData = data.photos;
-  let photoText = 'insert into photos (review_id, url) values ($1, $2)'
+  let photoText = 'insert into photos (review_id, url) values($1, $2)';
+  let charData = data.characteristics;
+  let charText = 'insert into characteristics_reviews (characteristics_id, review_id, value) values($1, $2, $3)';
   db.query(text, reviewData)
     .then(test => {
+      let queries = [];
       photoData.forEach(photo => {
         // check that test.rows does what i want
-        db.query(photoText, [test.rows[0], dataphoto.url])
+        queries.push(db.query(photoText, [test.rows.id, photo]))
       })
+      for (var k in charData) {
+        queries.push(db.query(charText, [k, test.rows.id, charData[k]]))
+      }
+      return Promise.all(queries)
+    })
+    .then(reviewID => {
+      db.query('Refresh materialized view review_ratings')
+      db.query('Refresh materialized view average_characteristics')
       res.send('added')
     })
     .catch(err => {
       console.log(err)
       res.send(err)
     })
-  // query review table data
-    // update materialized views
-  // query to add photos to photo table
-  // send res.status = 200
 })
 
 app.put('/reviews/:reviewID/helpful', (req, res) => {
   //console.log(req.query)
   let reviewID = req.params.reviewID;
   // update the report to add 1 to helpfulness
-  res.send(req.params)
+  let queryString = 'update reviews set helpfulnes = helpfulnes + 1 where id=$1'
+  db.query(queryString, [reviewID])
+    .then( () => {
+      res.status(204);
+      res.end();
+    })
+    .catch(err => {
+      res.send(err);
+    })
 })
 
 app.put('/reviews/:reviewID/report', (req, res) => {
   let reviewID = req.params.reviewID;
   // update the row to set report to true
-  res.send(req.params)
+  let queryString = 'update reviews set reported = true where id=$1'
+  db.query(queryString, [reviewID])
+    .then( () => {
+      res.status(204);
+      res.end();
+    })
+    .catch(err => {
+      res.send(err);
+    })
+  //res.send(req.params)
 })
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`)
 })
 
-// insert into reviews (product_id, rating, date, summary, body, recommended, reviewer, reviewer_email, helpfulnes) values (5, 3, 1519211809934, 'test, 'test 23', true, 'bob', 'test@email.com', 0) Returning id;'
+
+//insert into reviews (product_id, rating , date, summary, body, recommended, reviewer, reviewer_email, helpfulnes) values(5, 3, 1519211809934, 'test', 'anotherone', true, 'bob', 'test@email.com', 0) returning id;
+
+//insert into reviews (product_id, rating , date, summary, body, recommended, reviewer, reviewer_email, helpfulnes) values($1, $2, $3, $4, $5, $6, $7, $8, 0, 0) returning id;

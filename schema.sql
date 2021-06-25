@@ -22,6 +22,7 @@ CREATE TABLE reviews (
 CREATE INDEX review_helpfulnes ON reviews(helpfulnes);
 CREATE INDEX review_prodID ON reviews(product_id);
 CREATE INDEX review_recent ON reviews(date);
+Alter sequence reviews_id_seq restart with 5774953;
 
 CREATE TABLE photos (
   id SERIAL PRIMARY KEY,
@@ -30,6 +31,7 @@ CREATE TABLE photos (
   FOREIGN KEY (review_id) REFERENCES reviews(id)
 );
 CREATE INDEX photos_reviewId ON photos(review_id);
+Alter sequence photos_id_seq restart with 2742541;
 
 CREATE TABLE characteristics (
   id SERIAL PRIMARY KEY,
@@ -46,6 +48,7 @@ CREATE TABLE characteristics (
   -- FOREIGN KEY (review_id) REFERENCES reviews(id)
 );
 --CREATE INDEX chr_product ON characteristics(product_id);
+Alter sequence characteristics_id_seq restart with 3347680;
 
 CREATE TABLE characteristics_reviews (
   id SERIAL PRIMARY KEY,
@@ -55,6 +58,8 @@ CREATE TABLE characteristics_reviews (
   FOREIGN KEY (characteristics_id) REFERENCES characteristics(id),
   FOREIGN KEY (review_id) REFERENCES reviews(id)
 );
+Alter sequence characteristics_reviews_id_seq restart with 19327576;
+-- select count(*) from characteristics_reviews;
 -- CREATE INDEX chr_product ON characteristics_reviews(product_id)
 -- what the view needs to save:
   -- columns: id, product_id, 1, 2, 3, 4, 5 starts
