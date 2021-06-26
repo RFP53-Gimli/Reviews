@@ -33,11 +33,11 @@ app.get('/reviews/meta', (req, res) => {
 })
 app.get('/reviews', (req, res) => {
   console.log(req.query)
-  let page = req.query.page;
-  let count = req.query.count;
+  let page = req.query.page ? parseInt(req.query.page) : 1;
+  let count = req.query.count ? parseInt(req.query.count) : 5;
   let sort = req.query.sort;
   let product = req.query.product_id;
-
+  let response = { product, page, count }
   db.query('select * from reviews where product_id= $1 order by $2 desc limit $3 Offset $4;', [product, sort, count, (page - 1) * count])
    .then(data => {
      let test = [];
@@ -55,7 +55,8 @@ app.get('/reviews', (req, res) => {
    })
    .then(final => {
      // update materialized view
-     res.send(final);
+     response.results = final;
+     res.send(response);
    })
    .catch(err => res.send(err))
 })
@@ -68,6 +69,7 @@ app.post('/reviews', (req, res) => {
   let reviewData = [data.product_id, data.rating, Date.now(), data.summary, data.body, data.recommended, data.name, data.email]
   // format data to add a new row to reviews table
   let text = 'insert into reviews (product_id, rating , date, summary, body, recommended, reviewer, reviewer_email, helpfulnes) values($1, $2, $3, $4, $5, $6, $7, $8, 0) returning id;';
+
   let photoData = data.photos;
   let photoText = 'insert into photos (review_id, url) values($1, $2)';
   let charData = data.characteristics;
