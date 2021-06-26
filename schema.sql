@@ -79,6 +79,7 @@ CREATE MATERIALIZED VIEW average_characteristics AS
   select
     c.product_id,
     c.name,
+    c.id
     AVG(cr.value)
   from characteristics c
   join  characteristics_reviews cr
