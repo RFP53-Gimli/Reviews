@@ -2,3 +2,5 @@ node_modules/
 data/
 Dockerfile
 doNotCommit.js
+newrelic.js
+newrelic_agent.log

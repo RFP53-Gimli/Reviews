@@ -1,3 +1,4 @@
+const newrelic = require('newrelic');
 const express = require('express');
 const db = require('../database/db.js')
 const bodyParser = require('body-parser')
@@ -29,7 +30,10 @@ app.get('/reviews/meta', (req, res) => {
       res.send(response)
     }
     )
-    .catch(err => {res.send(err)})
+    .catch(err => {
+      res.status(400)
+      res.send(err)
+    })
 })
 app.get('/reviews', (req, res) => {
   console.log(req.query)
@@ -58,7 +62,10 @@ app.get('/reviews', (req, res) => {
      response.results = final;
      res.send(response);
    })
-   .catch(err => res.send(err))
+   .catch(err => {
+     res.status(400)
+     res.send(err)
+    })
 })
 
 app.post('/reviews', (req, res) => {
@@ -92,7 +99,7 @@ app.post('/reviews', (req, res) => {
       res.send('added')
     })
     .catch(err => {
-      console.log(err)
+      res.status(400)
       res.send(err)
     })
 })
@@ -108,6 +115,7 @@ app.put('/reviews/:reviewID/helpful', (req, res) => {
       res.end('good job');
     })
     .catch(err => {
+      res.status(400)
       res.send(err);
     })
 })
@@ -122,6 +130,7 @@ app.put('/reviews/:reviewID/report', (req, res) => {
       res.end();
     })
     .catch(err => {
+      res.status(400)
       res.send(err);
     })
   //res.send(req.params)
