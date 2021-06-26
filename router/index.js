@@ -125,9 +125,8 @@ app.put('/reviews/:reviewID/report', (req, res) => {
   //res.send(req.params)
 })
 
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`)
-})
+
+module.exports = app
 
 
 //insert into reviews (product_id, rating , date, summary, body, recommended, reviewer, reviewer_email, helpfulnes) values(5, 3, 1519211809934, 'test', 'anotherone', true, 'bob', 'test@email.com', 0) returning id;
