@@ -3,16 +3,28 @@ const db = require('../../database/db.js')
 // house queries here
 let dbQueries = {};
 
+// select * from characteristics where product_id=5; // 1090ish to less than a second with an index at prod id
+//select AVG(value) from characteristics_reviews where characteristics_id = 15; // 1900ish down to 3 with an index
+// select c.id, c.name  from characteristics where product_id=5
+// select c.name, c.id, AVG(cr.value) from characteristics c join characteristics_reviews cr on c.id = cr.characteristics_id where c.product_id=$1 group by c.name, c.id ;
+//select product_id, rating, count(rating) from reviews where product_id=5 group by product_id, rating;
+
 dbQueries.test = {};
 dbQueries.getReviewsMeta = function(product) {
-  let queryString = 'select rating, count from review_ratings where product_id=$1;';
+  let queryString = 'select product_id, rating, count(rating) from reviews where product_id=$1 group by product_id, rating;';
   return db.query(queryString, [product])
+    // .then(data => {
+    //   let results = data.rows;
+    //   // save name
+
+    // })
 }
 // return a promise
 
 dbQueries.getAvgCharacteristics = (product) => {
-  let queryString = 'select * from average_characteristics where product_id=$1;';
-  return db.query(queryString, [product])
+  //let queryString = 'select * from average_characteristics where product_id=$1;';
+  let test = 'select c.name, c.id, AVG(cr.value) from characteristics c join characteristics_reviews cr on c.id = cr.characteristics_id where c.product_id=$1 group by c.name, c.id ;'
+  return db.query(test, [product])
 }
 
 dbQueries.getNumberRecommended = (product) => {

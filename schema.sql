@@ -47,7 +47,7 @@ CREATE TABLE characteristics (
   -- FOREIGN KEY (product_id) REFERENCES products(id)
   -- FOREIGN KEY (review_id) REFERENCES reviews(id)
 );
---CREATE INDEX chr_product ON characteristics(product_id);
+CREATE INDEX characteristics_prod ON characteristics(product_id);
 Alter sequence characteristics_id_seq restart with 3347680;
 
 CREATE TABLE characteristics_reviews (
@@ -58,9 +58,9 @@ CREATE TABLE characteristics_reviews (
   FOREIGN KEY (characteristics_id) REFERENCES characteristics(id),
   FOREIGN KEY (review_id) REFERENCES reviews(id)
 );
+CREATE INDEX chr_review_char ON characteristics_reviews(characteristics_id);
 Alter sequence characteristics_reviews_id_seq restart with 19327576;
 -- select count(*) from characteristics_reviews;
--- CREATE INDEX chr_product ON characteristics_reviews(product_id)
 -- what the view needs to save:
   -- columns: id, product_id, 1, 2, 3, 4, 5 starts
 CREATE MATERIALIZED VIEW review_ratings AS

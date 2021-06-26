@@ -85,8 +85,8 @@ app.post('/reviews', (req, res) => {
       return Promise.all(queries)
     })
     .then(reviewID => {
-      db.query('Refresh materialized view review_ratings')
-      db.query('Refresh materialized view average_characteristics')
+      //db.query('Refresh materialized view review_ratings')
+      //db.query('Refresh materialized view average_characteristics')
       res.send('added')
     })
     .catch(err => {
@@ -132,3 +132,8 @@ module.exports = app
 //insert into reviews (product_id, rating , date, summary, body, recommended, reviewer, reviewer_email, helpfulnes) values(5, 3, 1519211809934, 'test', 'anotherone', true, 'bob', 'test@email.com', 0) returning id;
 
 //insert into reviews (product_id, rating , date, summary, body, recommended, reviewer, reviewer_email, helpfulnes) values($1, $2, $3, $4, $5, $6, $7, $8, 0, 0) returning id;
+
+// have product, use it to grab all related characterisit id
+// use that to find the values for each characteristic
+// select * from characteristics where product_id=5; // 1090ish to less than a second with an index at prod id
+//select AVG(value) from characteristics_reviews where characteristics_id = 15; // 1900ish down to 3 with an index
