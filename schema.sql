@@ -15,11 +15,11 @@ CREATE TABLE reviews (
   reviewer VARCHAR(50),
   reviewer_email VARCHAR(50),
   response VARCHAR(1000),
-  helpfulnes INT NOT NULL
+  helpfulness INT NOT NULL
   -- FOREIGN KEY (product_id) REFERENCES products(id)
 
 );
-CREATE INDEX review_helpfulnes ON reviews(helpfulnes);
+CREATE INDEX review_helpfulnes ON reviews(helpfulness);
 CREATE INDEX review_prodID ON reviews(product_id);
 CREATE INDEX review_recent ON reviews(date);
 Alter sequence reviews_id_seq restart with 5774953;

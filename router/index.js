@@ -84,9 +84,11 @@ app.post('/reviews', (req, res) => {
   db.query(text, reviewData)
     .then(test => {
       let queries = [];
+      console.log(test.rows[0].id)
       photoData.forEach(photo => {
         // check that test.rows does what i want
-        queries.push(db.query(photoText, [test.rows.id, photo]))
+        console.log(photo)
+        queries.push(db.query(photoText, [test.rows[0].id, photo]))
       })
       for (var k in charData) {
         queries.push(db.query(charText, [k, test.rows.id, charData[k]]))
@@ -148,3 +150,5 @@ module.exports = app
 // use that to find the values for each characteristic
 // select * from characteristics where product_id=5; // 1090ish to less than a second with an index at prod id
 //select AVG(value) from characteristics_reviews where characteristics_id = 15; // 1900ish down to 3 with an index
+
+// select r.id, r.product_id, p.id, p.url from reviews r join photos p on p.review_id = r.id where r.product_id = 5;

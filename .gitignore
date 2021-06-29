@@ -1,6 +1,13 @@
 node_modules/
 data/
-Dockerfile
 doNotCommit.js
 newrelic.js
 newrelic_agent.log
+Dockerfile
+docker-compose.yml
+db.sql
+test.dump
+newF.sql
+ndb.sql
+newdb.sql
+newdb.dump copy

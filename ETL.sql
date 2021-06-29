@@ -1,7 +1,7 @@
 -- Converts the CSV files to data that can be added to Postgres
 -- COPY products(id, name) FROM '/Users/derekmalone/temp/gimli/Reviews/data/Test/product.csv' DELIMITER ',' CSV HEADER;
 
-COPY reviews(id, product_id, rating, date, summary, body, recommended, reported, reviewer, reviewer_email, response, helpfulnes) FROM '/Users/derekmalone/temp/gimli/Reviews/data/Test/reviews.csv' DELIMITER ',' CSV HEADER;
+COPY reviews(id, product_id, rating, date, summary, body, recommended, reported, reviewer, reviewer_email, response, helpfulness) FROM '/Users/derekmalone/temp/gimli/Reviews/data/Test/reviews.csv' DELIMITER ',' CSV HEADER;
 
 COPY photos(id, review_id, url) FROM '/Users/derekmalone/temp/gimli/Reviews/data/Test/reviews_photos.csv' DELIMITER ',' CSV HEADER;
 
