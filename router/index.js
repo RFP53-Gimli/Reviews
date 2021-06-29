@@ -75,7 +75,7 @@ app.post('/reviews', (req, res) => {
   let data = req.body;
   let reviewData = [data.product_id, data.rating, Date.now(), data.summary, data.body, data.recommended, data.name, data.email]
   // format data to add a new row to reviews table
-  let text = 'insert into reviews (product_id, rating , date, summary, body, recommended, reviewer, reviewer_email, helpfulnes) values($1, $2, $3, $4, $5, $6, $7, $8, 0) returning id;';
+  let text = 'insert into reviews (product_id, rating , date, summary, body, recommended, reviewer, reviewer_email, helpfulness) values($1, $2, $3, $4, $5, $6, $7, $8, 0) returning id;';
 
   let photoData = data.photos;
   let photoText = 'insert into photos (review_id, url) values($1, $2)';
@@ -110,7 +110,7 @@ app.put('/reviews/:reviewID/helpful', (req, res) => {
   //console.log(req.query)
   let reviewID = req.params.reviewID;
   // update the report to add 1 to helpfulness
-  let queryString = 'update reviews set helpfulnes = helpfulnes + 1 where id=$1'
+  let queryString = 'update reviews set helpfulness = helpfulness + 1 where id=$1'
   db.query(queryString, [reviewID])
     .then( () => {
       res.status(204);
