@@ -36,36 +36,44 @@ app.get('/reviews/meta', (req, res) => {
     })
 })
 app.get('/reviews', (req, res) => {
-  console.log(req.query)
   let page = req.query.page ? parseInt(req.query.page) : 1;
   let count = req.query.count ? parseInt(req.query.count) : 5;
   let sort = req.query.sort;
   let product = req.query.product_id;
   let response = { product, page, count }
-  db.query('select * from reviews where product_id= $1 order by $2 desc limit $3 Offset $4;', [product, sort, count, (page - 1) * count])
-   .then(data => {
-     let test = [];
-     let results = data.rows;
-    results.forEach( (result, index) => {
-      test.push(db.query('select * from photos where review_id=$1', [results[index].id])
-      .then(data => {
-        results[index].photos = data.rows;
-      })
-      )
-     })
-    return Promise.all(test).then( () => {
-      return results
+  dbQueries.getReviews(product, sort, count, (page - 1) * count)
+    .then(data => {
+      //console.log(data.rows)
+      response.results = data.rows
+      res.send(response)
     })
-   })
-   .then(final => {
-     // update materialized view
-     response.results = final;
-     res.send(response);
-   })
-   .catch(err => {
-     res.status(400)
-     res.send(err)
+    .catch(err => {
+      res.send(err)
     })
+  // db.query('select * from reviews where product_id= $1 order by $2 desc limit $3 Offset $4;', [product, sort, count, (page - 1) * count])
+  //  .then(data => {
+  //    let test = [];
+  //    let results = data.rows;
+  //   results.forEach( (result, index) => {
+  //     test.push(db.query('select * from photos where review_id=$1', [results[index].id])
+  //     .then(data => {
+  //       results[index].photos = data.rows;
+  //     })
+  //     )
+  //    })
+  //   return Promise.all(test).then( () => {
+  //     return results
+  //   })
+  //  })
+  //  .then(final => {
+  //    // update materialized view
+  //    response.results = final;
+  //    res.send(response);
+  //  })
+  //  .catch(err => {
+  //    res.status(400)
+  //    res.send(err)
+  //   })
 })
 
 app.post('/reviews', (req, res) => {
@@ -96,8 +104,6 @@ app.post('/reviews', (req, res) => {
       return Promise.all(queries)
     })
     .then(reviewID => {
-      //db.query('Refresh materialized view review_ratings')
-      //db.query('Refresh materialized view average_characteristics')
       res.send('added')
     })
     .catch(err => {
@@ -111,12 +117,15 @@ app.put('/reviews/:reviewID/helpful', (req, res) => {
   let reviewID = req.params.reviewID;
   // update the report to add 1 to helpfulness
   let queryString = 'update reviews set helpfulness = helpfulness + 1 where id=$1'
+  console.log('test1')
   db.query(queryString, [reviewID])
     .then( () => {
+      console.log('test2')
       res.status(204);
       res.end('good job');
     })
     .catch(err => {
+      console.log('test3')
       res.status(400)
       res.send(err);
     })
@@ -152,3 +161,8 @@ module.exports = app
 //select AVG(value) from characteristics_reviews where characteristics_id = 15; // 1900ish down to 3 with an index
 
 // select r.id, r.product_id, p.id, p.url from reviews r join photos p on p.review_id = r.id where r.product_id = 5;
+
+
+// select id jsonb.agg(photo) from photo on review_id where review_id = 5;
+
+// select *, (select jsonb_agg(p) from photos p where p.review_id =r.id) from reviews r where product_id=15;

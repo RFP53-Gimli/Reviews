@@ -32,4 +32,9 @@ dbQueries.getNumberRecommended = (product) => {
   return db.query(queryString, [product])
 }
 
+dbQueries.getReviews = (...qInfo) => {
+  let queryString = 'select *, (select jsonb_agg(p) from photos p where p.review_id =r.id) from reviews r where product_id=$1 order by $2 desc limit $3 Offset $4;';
+  return db.query(queryString, qInfo)
+}
+
 module.exports = dbQueries
