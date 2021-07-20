@@ -17,7 +17,6 @@ CREATE TABLE reviews (
 CREATE INDEX review_helpfulnes ON reviews(helpfulness);
 CREATE INDEX review_prodID ON reviews(product_id);
 CREATE INDEX review_recent ON reviews(date);
-Alter sequence reviews_id_seq restart with 5774953;
 
 CREATE TABLE photos (
   id SERIAL PRIMARY KEY,
@@ -26,7 +25,6 @@ CREATE TABLE photos (
   FOREIGN KEY (review_id) REFERENCES reviews(id)
 );
 CREATE INDEX photos_reviewId ON photos(review_id);
-Alter sequence photos_id_seq restart with 2742541;
 
 CREATE TABLE characteristics (
   id SERIAL PRIMARY KEY,
@@ -34,7 +32,6 @@ CREATE TABLE characteristics (
   name VARCHAR(10)
 );
 CREATE INDEX characteristics_prod ON characteristics(product_id);
-Alter sequence characteristics_id_seq restart with 3347680;
 
 CREATE TABLE characteristics_reviews (
   id SERIAL PRIMARY KEY,
@@ -45,4 +42,3 @@ CREATE TABLE characteristics_reviews (
   FOREIGN KEY (review_id) REFERENCES reviews(id)
 );
 CREATE INDEX chr_review_char ON characteristics_reviews(characteristics_id);
-Alter sequence characteristics_reviews_id_seq restart with 19327576;
