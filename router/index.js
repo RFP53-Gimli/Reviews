@@ -149,20 +149,3 @@ app.put('/reviews/:reviewID/report', (req, res) => {
 
 
 module.exports = app
-
-
-//insert into reviews (product_id, rating , date, summary, body, recommended, reviewer, reviewer_email, helpfulnes) values(5, 3, 1519211809934, 'test', 'anotherone', true, 'bob', 'test@email.com', 0) returning id;
-
-//insert into reviews (product_id, rating , date, summary, body, recommended, reviewer, reviewer_email, helpfulnes) values($1, $2, $3, $4, $5, $6, $7, $8, 0, 0) returning id;
-
-// have product, use it to grab all related characterisit id
-// use that to find the values for each characteristic
-// select * from characteristics where product_id=5; // 1090ish to less than a second with an index at prod id
-//select AVG(value) from characteristics_reviews where characteristics_id = 15; // 1900ish down to 3 with an index
-
-// select r.id, r.product_id, p.id, p.url from reviews r join photos p on p.review_id = r.id where r.product_id = 5;
-
-
-// select id jsonb.agg(photo) from photo on review_id where review_id = 5;
-
-// select *, (select jsonb_agg(p) from photos p where p.review_id =r.id) from reviews r where product_id=15;
