@@ -1,7 +1,6 @@
 const app = require('../router/index.js');
 const supertest = require('supertest');
 const request = supertest(app);
-// mock a db to check posting and putting as well as check that correct data is returned for put
 
 describe('Reviews/meta', () => {
   it('Successful reviews/meta get returns 200 status', async () => {
