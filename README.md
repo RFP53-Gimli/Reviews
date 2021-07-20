@@ -5,6 +5,7 @@ This repository contains the Reviews microservice for the overall RFP53-Gimli ba
 
 ## Description
 **Endpoints** 
+
 GET /reviews
 * Returns a list of reviews for a given product
 * Parameters
