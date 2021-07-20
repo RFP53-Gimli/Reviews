@@ -5,7 +5,6 @@ const request = supertest(app);
 describe('Reviews/meta', () => {
   it('Successful reviews/meta get returns 200 status', async () => {
     const response = await request.get("/reviews/meta?product_id=5")
-    //.expect(200).then(res => {}).catch(err => done(err))
     expect(response.statusCode).toBe(200);
   } )
 
@@ -25,18 +24,14 @@ describe('Reviews/meta', () => {
 describe('Reviews', () => {
   it('Successful reviews returns returns 200 status', async () => {
     const response = await request.get("/reviews/")
-    //.expect(200).then(res => {}).catch(err => done(err))
     expect(response.statusCode).toBe(200);
-    //response.end()
   } )
-  // should default to page 1
   it('When page not provided it defaults to 1', async () => {
     const response = await request.get("/reviews?product_id=5&sort=helpfulness/")
     expect(response.statusCode).toBe(200);
     const body = response.body;
     expect(body.page).toBe(1);
   } )
-  // should default to count 5
   it('When count not provided it defaults to 5', async () => {
     const response = await request.get("/reviews?product_id=5&page=1&sort=helpfulness/")
     expect(response.statusCode).toBe(200);
